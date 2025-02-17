@@ -1,8 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System;
+using System.IO;
 
 public class MainManager : MonoBehaviour
 {
@@ -56,7 +56,7 @@ public class MainManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 m_Started = true;
-                float randomDirection = Random.Range(-1.0f, 1.0f);
+                float randomDirection = UnityEngine.Random.Range(-1.0f, 1.0f);
                 Vector3 forceDir = new Vector3(randomDirection, 1, 0);
                 forceDir.Normalize();
 
@@ -93,14 +93,46 @@ public class MainManager : MonoBehaviour
 
     public void GameOver()
     {
+        WriteScore();
         BestScoreText.text = "Best Score : " + MenuUIHandler.playerName + " : " + m_Points;
         m_GameOver = true;
         GameOverText.SetActive(true);
     }
 
 
+    [Serializable]
+    class ScoreData
+    {
+        public string playerName;
+        public int m_Points;
+    }
 
 
+    public void WriteScore()
+    {
+        string path = Application.persistentDataPath + "/saveFile.json";
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            ScoreData savedData = JsonUtility.FromJson<ScoreData>(json);
 
+            if (m_Points > savedData.m_Points)
+            {
+                savedData.m_Points = m_Points;
+            }
+            else
+            {
+                return;
+            }
+        }
+        ScoreData save = new ScoreData();
+        save.playerName = MenuUIHandler.playerName;
+        save.m_Points = m_Points;
+        string jsonFile = JsonUtility.ToJson(save);
+        File.WriteAllText(path, jsonFile);
+    }
 
 }
+
+
+
