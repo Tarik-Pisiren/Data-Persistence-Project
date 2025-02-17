@@ -1,11 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEditor;
+using TMPro;
 
 
 public class MenuUIHandler : MonoBehaviour
 {
+    public static string playerName;
+    public TMP_InputField enterName;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,14 +22,24 @@ public class MenuUIHandler : MonoBehaviour
 
 
 
-    private void LoadGame()
+    public void LoadGame()
     {
-        SceneManager.LoadScene("Main");
+        SceneManager.LoadScene(1);
     }
 
 
-    private void QuitGame()
+    public void QuitGame()
     {
+#if (UNITY_EDITOR)
+        EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
 
+    public void SavePlayerName()
+    {
+        playerName = enterName.text;
+        Debug.Log(playerName);
     }
 }
