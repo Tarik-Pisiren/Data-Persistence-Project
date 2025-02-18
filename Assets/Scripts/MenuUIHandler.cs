@@ -37,6 +37,11 @@ public class MenuUIHandler : MonoBehaviour
 #endif
     }
 
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
+
     public void SavePlayerName()
     {
         playerName = enterName.text;
